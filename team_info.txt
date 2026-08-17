@@ -1,0 +1,10 @@
+Team Name: CSE4204-8B-T06
+Section: 8B
+
+Members:
+1) Name: Hemendra Nath Mondal, Student ID: 11220320873, Role: Team Leader
+2) Name: Shekh Sirajum Munir , Student ID: 11220320894, Role: Backend
+2) Name: Huzaifa Islam Taseen, Student ID: 11220320883, Role: Frontend
+3) Name: Syed Mostofa Rafid  , Student ID: 11220320892, Role: AI Lead
+
+Primary contact (team leader) email: hemendranath.nubtk@gmail.com
