@@ -1,0 +1,34 @@
+erDiagram
+    AUTH_USER {
+        INTEGER id PK
+        VARCHAR username
+        VARCHAR email
+    }
+    HABIT {
+        INTEGER id PK
+        INTEGER owner_id FK
+        VARCHAR title
+        TEXT description
+        VARCHAR frequency
+        VARCHAR tags
+        VARCHAR color
+        TIMESTAMP created_at
+    }
+    HABIT_ENTRY {
+        INTEGER id PK
+        INTEGER habit_id FK
+        DATE date
+        VARCHAR status
+        TEXT notes
+    }
+    AI_RESPONSE {
+        INTEGER id PK
+        INTEGER user_id FK
+        TEXT prompt
+        JSON response
+        TIMESTAMP created_at
+    }
+
+    AUTH_USER ||--o{ HABIT : "creates"
+    HABIT ||--o{ HABIT_ENTRY : "has"
+    AUTH_USER ||--o{ AI_RESPONSE : "requests"
