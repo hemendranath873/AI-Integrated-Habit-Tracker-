@@ -1,0 +1,13 @@
+12-Week Plan
+Week 1: Team & repo skeleton
+Week 2: Proposal
+Week 3: SRS
+Week 4: System design & ER
+Week 5: UI/UX wireframes
+Week 6: Backend core (auth, models)
+Week 7: Frontend core (auth, dashboard)
+Week 8: AI integration
+Week 9: Feature completion
+Week 10: Testing & debugging
+Week 11: Deployment
+Week 12: Final report & presentation

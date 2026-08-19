@@ -1,0 +1,9 @@
+# root .gitignore
+node_modules/
+dist/
+.env
+.DS_Store
+Thumbs.db
+__pycache__/
+*.pyc
+venv/

@@ -1,0 +1,8 @@
+SRS (short)
+Project: AI-Integrated Habit Tracker
+Core features:
+- User authentication (JWT)
+- Habit CRUD (title, description, frequency, tags, color)
+- Daily tracking: mark done/skip/missed per date
+- Dashboard analytics (streaks, completion)
+- AI endpoints: habit suggestions, progress summarization
