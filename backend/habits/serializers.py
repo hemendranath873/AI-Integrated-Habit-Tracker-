@@ -1,14 +1,41 @@
 from rest_framework import serializers
-from .models import Habit, HabitEntry
 
-class HabitEntrySerializer(serializers.ModelSerializer):
+from .models import Habit, HabitCompletion
+
+
+
+class HabitCompletionSerializer(serializers.ModelSerializer):
+
     class Meta:
-        model = HabitEntry
-        fields = ('id','date','status','notes')
+
+        model = HabitCompletion
+
+        fields = [
+            "id",
+            "date",
+            "completed"
+        ]
+
+
 
 class HabitSerializer(serializers.ModelSerializer):
-    entries = HabitEntrySerializer(many=True, read_only=True)
+
+    completions = HabitCompletionSerializer(
+        many=True,
+        read_only=True
+    )
+
+
     class Meta:
+
         model = Habit
-        fields = ('id','owner','title','description','frequency','tags','color','created_at','entries')
-        read_only_fields = ('owner','created_at')
+
+        fields = [
+            "id",
+            "title",
+            "description",
+            "frequency",
+            "created_at",
+            "is_active",
+            "completions"
+        ]

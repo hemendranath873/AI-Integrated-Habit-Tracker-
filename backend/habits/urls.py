@@ -1,11 +1,34 @@
-from rest_framework.routers import DefaultRouter
-from django.urls import path, include
-from .views import HabitViewSet, HabitEntryViewSet
+from django.urls import path
 
-router = DefaultRouter()
-router.register(r'', HabitViewSet, basename='habits')
-router.register(r'entries', HabitEntryViewSet, basename='entries')
+from .views import (
+    HabitListCreateView,
+    HabitDetailView,
+    CompleteHabitView,
+    DashboardView
+)
+
+
 
 urlpatterns = [
-    path('', include(router.urls)),
+
+    path(
+        "",
+        HabitListCreateView.as_view()
+    ),
+
+    path(
+        "<int:id>/",
+        HabitDetailView.as_view()
+    ),
+
+    path(
+        "<int:id>/complete/",
+        CompleteHabitView.as_view()
+    ),
+
+    path(
+        "dashboard/",
+        DashboardView.as_view()
+    ),
+
 ]

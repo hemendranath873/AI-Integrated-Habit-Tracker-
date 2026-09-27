@@ -1,4 +1,8 @@
 from django.contrib import admin
-from .models import Habit, HabitEntry
+
+from .models import Habit, HabitCompletion
+
+
 admin.site.register(Habit)
-admin.site.register(HabitEntry)
+
+admin.site.register(HabitCompletion)

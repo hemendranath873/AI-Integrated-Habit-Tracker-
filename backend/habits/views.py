@@ -1,32 +1,186 @@
-from rest_framework import viewsets, permissions
-from rest_framework.decorators import action
+from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import Habit, HabitEntry
-from .serializers import HabitSerializer, HabitEntrySerializer
-from datetime import date
+from rest_framework import status
 
-class HabitViewSet(viewsets.ModelViewSet):
-    serializer_class = HabitSerializer
-    permission_classes = [permissions.IsAuthenticated]
+from rest_framework.permissions import IsAuthenticated
 
-    def get_queryset(self):
-        return Habit.objects.filter(owner=self.request.user)
+from .models import Habit, HabitCompletion
+from .serializers import HabitSerializer
+from .services import calculate_streak
 
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
 
-    @action(detail=True, methods=['post'])
-    def mark(self, request, pk=None):
-        habit = self.get_object()
-        d = request.data.get('date') or str(date.today())
-        status_ = request.data.get('status','done')
-        notes = request.data.get('notes','')
-        entry, created = HabitEntry.objects.update_or_create(habit=habit, date=d, defaults={'status':status_,'notes':notes})
-        return Response(HabitEntrySerializer(entry).data)
 
-class HabitEntryViewSet(viewsets.ModelViewSet):
-    serializer_class = HabitEntrySerializer
-    permission_classes = [permissions.IsAuthenticated]
+class HabitListCreateView(APIView):
 
-    def get_queryset(self):
-        return HabitEntry.objects.filter(habit__owner=self.request.user)
+    permission_classes = [
+        IsAuthenticated
+    ]
+
+
+    def get(self, request):
+
+        habits = Habit.objects.filter(
+            user=request.user
+        )
+
+        serializer = HabitSerializer(
+            habits,
+            many=True
+        )
+
+        return Response(
+            serializer.data
+        )
+
+
+
+    def post(self, request):
+
+        serializer = HabitSerializer(
+            data=request.data
+        )
+
+        if serializer.is_valid():
+
+            serializer.save(
+                user=request.user
+            )
+
+            return Response(
+                serializer.data,
+                status=status.HTTP_201_CREATED
+            )
+
+
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+
+
+
+class HabitDetailView(APIView):
+
+    permission_classes = [
+        IsAuthenticated
+    ]
+
+
+    def get_object(self, id, user):
+
+        return Habit.objects.get(
+            id=id,
+            user=user
+        )
+
+
+
+    def put(self, request, id):
+
+        habit = self.get_object(
+            id,
+            request.user
+        )
+
+        serializer = HabitSerializer(
+            habit,
+            data=request.data
+        )
+
+
+        if serializer.is_valid():
+
+            serializer.save()
+
+            return Response(
+                serializer.data
+            )
+
+
+        return Response(
+            serializer.errors
+        )
+
+
+
+    def delete(self, request, id):
+
+        habit = self.get_object(
+            id,
+            request.user
+        )
+
+        habit.delete()
+
+        return Response(
+            {
+                "message": "Habit deleted"
+            }
+        )
+
+
+
+class CompleteHabitView(APIView):
+
+    permission_classes = [
+        IsAuthenticated
+    ]
+
+
+    def post(self, request, id):
+
+        habit = Habit.objects.get(
+            id=id,
+            user=request.user
+        )
+
+
+        completion = HabitCompletion.objects.create(
+            habit=habit
+        )
+
+
+        return Response(
+            {
+                "message": "Habit completed",
+                "date": completion.date
+            }
+        )
+
+
+
+class DashboardView(APIView):
+
+    permission_classes = [
+        IsAuthenticated
+    ]
+
+
+    def get(self, request):
+
+        habits = Habit.objects.filter(
+            user=request.user
+        )
+
+
+        data = []
+
+
+        for habit in habits:
+
+            streak = calculate_streak(
+                habit.completions.all()
+            )
+
+            data.append(
+                {
+                    "habit": habit.title,
+                    "streak": streak
+                }
+            )
+
+
+        return Response(
+            data
+        )
